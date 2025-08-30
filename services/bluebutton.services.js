@@ -24,8 +24,8 @@ export const getPatientById = async (accessToken, patientId) => {
   );
   return response.data;
 };
-export const getEob = async (accessToken, types = null) => {
-  // eslint-disable-next-line no-undef
+export const getEob = async (accessToken, patientId, types = null) => {
+  // Correct FHIR EOB endpoint
   const baseUrl = `${process.env.BB_API_BASE_URL}ExplanationOfBenefit`;
 
   const headers = {
@@ -35,8 +35,10 @@ export const getEob = async (accessToken, types = null) => {
 
   const urls =
     types && types.length > 0
-      ? types.map((type) => `${baseUrl}?type=${type}&_summary=true`)
-      : [`${baseUrl}?_summary=true`];
+      ? types.map(
+          (type) => `${baseUrl}?patient=${patientId}&type=${type}&_summary=true`
+        )
+      : [`${baseUrl}?patient=${patientId}&_summary=true`];
 
   const responses = await Promise.all(
     urls.map((url) => axios.get(url, { headers }))
@@ -50,7 +52,7 @@ export const getEob = async (accessToken, types = null) => {
     entry: allEntries,
   };
 
-  console.log("Fetched EOB entries:", result.entry.length); // Optional debug
+  console.log("Fetched EOB entries:", result.entry.length);
   return result;
 };
 
