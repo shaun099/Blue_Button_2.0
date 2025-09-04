@@ -25,7 +25,8 @@ export const getPatientById = async (accessToken, patientId) => {
   return response.data;
 };
 export const getEob = async (accessToken, patientId, types = null) => {
-  // Correct FHIR EOB endpoint
+  
+  // eslint-disable-next-line no-undef
   const baseUrl = `${process.env.BB_API_BASE_URL}ExplanationOfBenefit`;
 
   const headers = {
