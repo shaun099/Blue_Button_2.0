@@ -55,7 +55,10 @@ export const getEobForPatient = async (req, res) => {
 
     const patient = await getEob(newAccessToken, consent.patientId);
     const Eob_data = filteredEob(patient);
-    return res.json(Eob_data);
+
+    return res.json(Eob_data  );
+
+    // return res.json(Eob_data);
   } catch (err) {
     console.log(err);
     if (err.response && err.response.status === 404) {

@@ -1,10 +1,10 @@
 import axios from "axios";
 import querystring from "querystring";
 
-export const getAuthUrl = (state) => {
+export const getAuthUrl = (state,code_challenge) => {
   // A state parameter is now mandatory for security and multi-clinic functionality.
-  if (!state) {
-    throw new Error("A state parameter is required for security.");
+   if (!state || !code_challenge) {
+    throw new Error("State and code_challenge are required.");
   }
 
   const params = {
@@ -12,6 +12,10 @@ export const getAuthUrl = (state) => {
     redirect_uri: process.env.BB_REDIRECT_URI,
     response_type: "code",
     state: state,
+    
+    // PKCE parameters required by Blue Button
+    code_challenge: code_challenge,
+    code_challenge_method: "S256",
   };
 
   return `${process.env.BB_AUTH_URL}?${querystring.stringify(params)}`;
@@ -19,9 +23,12 @@ export const getAuthUrl = (state) => {
 
 const usedCodes = new Set();
 
-export const exchangeCodeForToken = async (code) => {
+export const exchangeCodeForToken = async (code,code_verifier) => {
   if (usedCodes.has(code)) {
     throw new Error("Authorization code has already been used");
+  }
+  if (!code || !code_verifier) {
+    throw new Error("Authorization code and code_verifier are required.");
   }
 
   const authString = Buffer.from(
@@ -35,6 +42,7 @@ export const exchangeCodeForToken = async (code) => {
         grant_type: "authorization_code",
         code,
         redirect_uri: process.env.BB_REDIRECT_URI,
+          code_verifier: code_verifier,
       }),
       {
         headers: {

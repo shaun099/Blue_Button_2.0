@@ -8,6 +8,7 @@ import clinicRouter from "./routes/clinics.routes.js";
 import patientRouter from "./routes/patient.routes.js";
 import eobRouter from "./routes/eob.routes.js";
 import coverageRouter from "./routes/coverage.routes.js";
+import codeRouter from "./routes/code.routes.js";
 import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 
 import mongoose from "mongoose";
@@ -54,6 +55,8 @@ app.use("/api/patient", patientRouter);
 app.use("/api/eob", eobRouter);
 
 app.use("/api/coverage", coverageRouter);
+
+app.use("/api/codes",codeRouter);
 
 app.get("/", (req, res) => {
   res.send("api running");

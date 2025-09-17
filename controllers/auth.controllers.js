@@ -4,6 +4,9 @@ import { getAuthUrl } from "../services/auth.services.js";
 import crypto from "crypto";
 import Consent from "../models/consent.model.js";
 import { addPatientToDatabase } from "../services/mongodb.services.js";
+import { generatePkce } from "../utils/pkce.js";
+
+const { code_verifier, code_challenge } = generatePkce();
 
 // Step 1: Auth Initiation
 export const initiateAuth = (req, res) => {
@@ -19,7 +22,8 @@ export const initiateAuth = (req, res) => {
     const nonce = crypto.randomUUID();
     req.session.bb_oauth_nonce = nonce;
     const state = `clinicId=${clinicId}&nonce=${nonce}`;
-    const authorizationUrl = getAuthUrl(state);
+
+    const authorizationUrl = getAuthUrl(state, code_challenge);
     const { internalPatientId } = req.body;
     req.session.patientId = internalPatientId;
 
@@ -70,7 +74,7 @@ export const handleCallback = async (req, res) => {
       });
     }
 
-    const tokenData = await exchangeCodeForToken(code);
+    const tokenData = await exchangeCodeForToken(code, code_verifier);
 
     if (!tokenData || tokenData.error) {
       console.log("❌ Token exchange failed:", tokenData);
