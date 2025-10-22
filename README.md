@@ -20,7 +20,7 @@ Features, routes, and database models are still being refined.
 - ✅ MongoDB database connection and schema creation  
 - ✅ Basic API routes for Patient and EOB data  
 - 🚧 Token refresh and session management  
-- 🚧 Swagger documentation setup  
+
 
 ---
 
@@ -34,7 +34,7 @@ Features, routes, and database models are still being refined.
 | **API Integration** | Blue Button 2.0 API (OAuth2) |
 | **Environment Management** | dotenv |
 | **HTTP Requests** | Axios or node-fetch |
-| **Documentation** | Swagger (in progress) |
+
 
 ---
 
